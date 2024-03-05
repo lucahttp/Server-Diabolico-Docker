@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  pvpgn-armlinux:
+    tty: true
+    volumes:
+      - ~/pvpgn-server:/pvpgn-server
+    # image: pvpgn-armlinux
+    build:
+      context: ./
+      dockerfile: server-diabolico.Dockerfile
+    ports:
+    #  - "6112-6114:6112-6114/udp"
+      - "6112:6112/udp"
+      - "6112:6112/tcp" # Feb 22 01:38:44 [info ] _setup_listensock: listening for bnet connections on 0.0.0.0:6112 TCP
+      - "6200:6200/tcp" # Feb 22 01:38:44 [info ] _setup_listensock: listening for w3route connections on 0.0.0.0:6200 TCP 
+    #  - "4000:4000"
+    #  - "16112:16112"
+    #  - "8888:8888"
+  D2GS:
+    build:
+      context: ./
+      dockerfile: server-diabolico.Dockerfile
+    ports:
+    #  - "6112-6114:6112-6114/udp"
+      - "6112:6112/udp"
+      - "6112:6112/tcp" # Feb 22 01:38:44 [info ] _setup_listensock: listening for bnet connections on 0.0.0.0:6112 TCP
+      - "6200:6200/tcp" 
+
+networks:
+  nginx_vlan:
+    driver: macvlan
+    driver_opts:
+      parent: enp4s0
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.133.0/24
+          gateway: 192.168.133.1
